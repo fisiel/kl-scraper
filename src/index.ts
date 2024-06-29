@@ -12,6 +12,7 @@ export { LoggerLevel } from './logger/logger.module';
 export {
   KLScraperOptionsEnvVariable,
   KLScraperOptionsInput,
+  KLScraperOptionsProvider,
 } from './kl-scraper-options/kl-scraper-options.module';
 
 export * from './kl.scraper';

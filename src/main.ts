@@ -1,5 +1,4 @@
-import { KLScraper } from './index';
-import { KLScraperOptionsProvider } from './kl-scraper-options/kl-scraper-options.module';
+import { KLScraper, KLScraperOptionsProvider } from './index';
 
 const klScraperOptions = KLScraperOptionsProvider.getFromEnv();
 
