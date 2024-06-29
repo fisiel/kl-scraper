@@ -17,12 +17,10 @@ export class KLScraper {
   private recipesListPageScraper = null as unknown as RecpiesListPageScraper;
 
   public async init(klScraperOptions?: KLScraperOptionsInput): Promise<KLScraper> {
-    const klScraperOptionsProvider = new KLScraperOptionsProvider();
-
     const {
       browser: { requestTimeout, headless, delayBetweenRequests },
       log: { level },
-    } = klScraperOptionsProvider.provide(klScraperOptions);
+    } = new KLScraperOptionsProvider().provide(klScraperOptions);
 
     const loggerProvider = new LoggerProvider(level);
 
