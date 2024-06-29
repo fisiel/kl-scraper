@@ -13,7 +13,7 @@ import { KLScraperOptions } from './types/interface/kl-scraper-options.interface
 export class KLScraperOptionsProvider {
   public provide(klScraperOptions?: KLScraperOptionsInput): KLScraperOptions {
     if (!klScraperOptions) {
-      klScraperOptions = this.getFromEnv();
+      klScraperOptions = {};
     }
 
     const { browser, log } = klScraperOptions;
@@ -33,7 +33,7 @@ export class KLScraperOptionsProvider {
     };
   }
 
-  private getFromEnv(): KLScraperOptionsInput {
+  static getFromEnv(): KLScraperOptionsInput {
     return {
       browser: {
         requestTimeout: process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_BROWSER_REQUEST_TIMEOUT]
