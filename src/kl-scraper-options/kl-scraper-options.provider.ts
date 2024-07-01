@@ -10,7 +10,7 @@ import { KLScraperOptionsProviderOutput } from './types/interface/kl-scraper-opt
 import { KLScraperOptions } from './types/interface/kl-scraper-options.interface';
 
 export class KLScraperOptionsProvider {
-  provide(klScraperOptions?: KLScraperOptions): KLScraperOptionsProviderOutput {
+  static provide(klScraperOptions?: KLScraperOptions): KLScraperOptionsProviderOutput {
     const browser = {
       requestTimeout: klScraperOptions?.browser?.requestTimeout ?? DEFAULT_REQUEST_TIMEOUT,
       headless: klScraperOptions?.browser?.headless ?? DEFAULT_BROWSER_HEADLESS,
