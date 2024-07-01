@@ -25,9 +25,7 @@ export class KLScraperOptionsProvider {
       dir: klScraperOptions?.log?.dir,
     };
 
-    const options = { browser, log };
-
-    return options;
+    return { browser, log };
   }
 
   static getFromEnv(): KLScraperOptions {
