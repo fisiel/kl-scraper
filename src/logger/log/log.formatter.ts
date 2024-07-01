@@ -2,8 +2,20 @@ import { LogLevelColor } from './types/enum/log-level-color.enum';
 import { LogLevelName } from './types/enum/log-level-name.enum';
 
 export class LogFormatter {
-  public formatMessage(levelName: LogLevelName, serviceName: string, message: string): string {
+  public formatMessageForConsole(
+    levelName: LogLevelName,
+    serviceName: string,
+    message: string,
+  ): string {
     return `${LogLevelColor[levelName]}[${this.getCurrentTimestamp()}] [${levelName}] [${serviceName}]\x1b[0m ${message}`;
+  }
+
+  public formatMessageForFile(
+    levelName: LogLevelName,
+    serviceName: string,
+    message: string,
+  ): string {
+    return `[${this.getCurrentTimestamp()}] [${levelName}] [${serviceName}] ${message}\n`;
   }
 
   private getCurrentTimestamp(): string {

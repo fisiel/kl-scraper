@@ -1,4 +1,5 @@
-import { Logger, LoggerProvider } from '../../logger/logger.module';
+import { LoggerProvider } from '../../logger/logger.provider';
+import { Logger } from '../../logger/types/interface/logger.interface';
 import { RecipePageNutritionalValueUnit } from './types/enum/recipe-page-element-nutritional-value-unit.enum';
 import { Ingredient } from './types/interface/ingredient.interface';
 import { NutritionalValue } from './types/interface/nutritional-value.interface';
@@ -13,7 +14,7 @@ export class RecipePageElementResolver {
   public resolveTitle(titleElementAttribute: string): string {
     const title = titleElementAttribute.replace(' - przepis', '');
 
-    this.logger.debug(`Title: ${title}`);
+    this.logger.silly(`Title: ${title}`);
 
     return title;
   }
@@ -21,7 +22,7 @@ export class RecipePageElementResolver {
   public resolveNumberOfServings(numberOfServingsElementInnerText: string): number {
     const numberOfServings = parseInt(this.trimDoubleQuotes(numberOfServingsElementInnerText), 10);
 
-    this.logger.debug(`Number of servings: ${numberOfServings}`);
+    this.logger.silly(`Number of servings: ${numberOfServings}`);
 
     return numberOfServings;
   }
@@ -35,7 +36,7 @@ export class RecipePageElementResolver {
       unit: string;
     };
 
-    this.logger.debug(`Recipe part ingredient:\n${JSON.stringify(ingredient, null, 2)}`);
+    this.logger.silly(`Recipe part ingredient:\n${JSON.stringify(ingredient, null, 2)}`);
 
     return ingredient;
   }
@@ -45,14 +46,14 @@ export class RecipePageElementResolver {
   ): NutritionalValue {
     const [value, unit] = nutritionalValueValueUnitElementInnerText.split(' ');
 
-    this.logger.debug(`Nutritional value split value: ${value} and unit: ${unit}`);
+    this.logger.silly(`Nutritional value split value: ${value} and unit: ${unit}`);
 
     const nutritionalValue = {
       value: parseFloat(value.replace(',', '.')),
       unit: unit as RecipePageNutritionalValueUnit,
     };
 
-    this.logger.debug(`Nutritional value:\n${JSON.stringify(nutritionalValue, null, 2)}`);
+    this.logger.silly(`Nutritional value:\n${JSON.stringify(nutritionalValue, null, 2)}`);
 
     return nutritionalValue;
   }
@@ -60,7 +61,7 @@ export class RecipePageElementResolver {
   public resolveBeforeCookingStep(beforeCookingStepElementInnerText: string): string {
     const beforeCookingStep = this.trimDoubleQuotes(beforeCookingStepElementInnerText);
 
-    this.logger.debug(`Before cooking step: ${beforeCookingStep}`);
+    this.logger.silly(`Before cooking step: ${beforeCookingStep}`);
 
     return beforeCookingStep;
   }
@@ -68,7 +69,7 @@ export class RecipePageElementResolver {
   public resolveCookingStepDescription(cookingStepDescriptionElementInnerText: string): string {
     const cookingStepDescription = this.trimDoubleQuotes(cookingStepDescriptionElementInnerText);
 
-    this.logger.debug(`Cooking step description: ${cookingStepDescription}`);
+    this.logger.silly(`Cooking step description: ${cookingStepDescription}`);
 
     return cookingStepDescription;
   }

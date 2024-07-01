@@ -1,4 +1,5 @@
-import { Logger, LoggerProvider } from '../../logger/logger.module';
+import { LoggerProvider } from '../../logger/logger.provider';
+import { Logger } from '../../logger/types/interface/logger.interface';
 
 export class RecipesListPageElementResolver {
   private readonly logger: Logger;
@@ -7,21 +8,13 @@ export class RecipesListPageElementResolver {
     this.logger = this.loggerProvider.provide(RecipesListPageElementResolver.name);
   }
 
-  public resolveNumberOfAllPages(numberOfAllRecipes: number, numberOfRecipes: number): number {
-    const numberOfAllPages = Math.ceil(numberOfAllRecipes / numberOfRecipes);
-
-    this.logger.debug(`Number of all pages: ${numberOfAllPages}`);
-
-    return numberOfAllPages;
-  }
-
   public resolveNumberOfAllRecipes(numberOfAllRecipesElementInnerText: string): number {
     const numberOfAllRecipes = parseInt(
       numberOfAllRecipesElementInnerText.replace('liczba przepisów: ', ''),
       10,
     );
 
-    this.logger.debug(`Number of all recipes: ${numberOfAllRecipes}`);
+    this.logger.silly(`Number of all recipes: ${numberOfAllRecipes}`);
 
     return numberOfAllRecipes;
   }

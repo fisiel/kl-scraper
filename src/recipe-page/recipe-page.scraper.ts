@@ -1,7 +1,8 @@
-import { Logger, LoggerProvider } from '../logger/logger.module';
-import { PageProvider } from '../page/page.module';
-import { RecipePageElementParser } from './recipe-page-element/recipe-page-element.module';
-import { RecipePageUrlResolver } from './recipe-page-url/recipe-page-url.module';
+import { LoggerProvider } from '../logger/logger.provider';
+import { Logger } from '../logger/types/interface/logger.interface';
+import { PageProvider } from '../page/page.provider';
+import { RecipePageElementParser } from './recipe-page-element/recipe-page-element.parser';
+import { RecipePageUrlResolver } from './recipe-page-url/recipe-page-url.resolver';
 import { RecipePage } from './types/interface/recipe-page.interface';
 
 export class RecipePageScraper {
@@ -20,7 +21,7 @@ export class RecipePageScraper {
     this.recipePageElementParser = new RecipePageElementParser(loggerProvider);
   }
 
-  public async scrap(recipePath: string): Promise<RecipePage> {
+  public async scrapOne(recipePath: string): Promise<RecipePage> {
     this.logger.info(`Scraping recipe with path: ${recipePath}`);
 
     const url = this.recipePageUrlResolver.resolve(recipePath);
@@ -45,8 +46,19 @@ export class RecipePageScraper {
 
     await page.close();
 
-    this.logger.info(`Recipe scraped from page ${url} :\n${JSON.stringify(recipe, null, 2)}`);
+    this.logger.debug(`Scraped recipe :\n${JSON.stringify(recipe, null, 2)}`);
 
     return recipe;
+  }
+
+  public async scrapMany(recipesPaths: string[]): Promise<RecipePage[]> {
+    this.logger.info(`Scraping ${recipesPaths.length} recipes`);
+
+    const recipes: RecipePage[] = [];
+    for (const recipePath of recipesPaths) {
+      recipes.push(await this.scrapOne(recipePath));
+    }
+
+    return recipes;
   }
 }

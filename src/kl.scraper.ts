@@ -1,28 +1,29 @@
 import { Browser, chromium } from 'playwright';
-import {
-  KLScraperOptionsInput,
-  KLScraperOptionsProvider,
-} from './kl-scraper-options/kl-scraper-options.module';
-import { Logger, LoggerProvider } from './logger/logger.module';
-import { PageProvider } from './page/page.module';
-import { RecipePage, RecipePageScraper } from './recipe-page/recipe-page.module';
-import { RecpiesListPageScraper } from './recipes-list-page/recipes-list-page.module';
+import { KLScraperOptionsProvider } from './kl-scraper-options/kl-scraper-options.provider';
+import { KLScraperOptions } from './kl-scraper-options/types/interface/kl-scraper-options.interface';
+import { LoggerProvider } from './logger/logger.provider';
+import { Logger } from './logger/types/interface/logger.interface';
+import { PageProvider } from './page/page.provider';
+import { RecipePageScraper } from './recipe-page/recipe-page.scraper';
+import { RecpiesListPageScraper } from './recipes-list-page/recipes-list-page.scraper';
+import { RecipesPaginated } from './types/type/recipes-paginated.type';
 
 export class KLScraper {
   private logger: Logger = null as unknown as Logger;
 
-  private browser = null as unknown as Browser;
+  private browser: Browser = null as unknown as Browser;
 
-  private recipePageScraper = null as unknown as RecipePageScraper;
-  private recipesListPageScraper = null as unknown as RecpiesListPageScraper;
+  private recipePageScraper: RecipePageScraper = null as unknown as RecipePageScraper;
+  private recipesListPageScraper: RecpiesListPageScraper =
+    null as unknown as RecpiesListPageScraper;
 
-  public async init(klScraperOptions?: KLScraperOptionsInput): Promise<KLScraper> {
+  public async init(klScraperOptions?: KLScraperOptions): Promise<KLScraper> {
     const {
-      browser: { requestTimeout, headless, delayBetweenRequests },
-      log: { level },
+      browser: { headless, requestTimeout, delayBetweenRequests },
+      log: { level, dir },
     } = new KLScraperOptionsProvider().provide(klScraperOptions);
 
-    const loggerProvider = new LoggerProvider(level);
+    const loggerProvider = new LoggerProvider(level, dir);
 
     this.logger = loggerProvider.provide(KLScraper.name);
 
@@ -42,33 +43,34 @@ export class KLScraper {
     this.recipePageScraper = new RecipePageScraper(pageProvider, loggerProvider);
     this.recipesListPageScraper = new RecpiesListPageScraper(pageProvider, loggerProvider);
 
-    this.logger.info('Scraper initialized');
-
     return this;
   }
 
-  public async scrap(): Promise<void> {
-    this.logger.info('Starting scraping');
+  public async scrapPaginated(cursor?: number, limit?: number): Promise<RecipesPaginated> {
+    this.logger.info(`Starting scraping with cursor: ${cursor} and limit: ${limit}`);
 
-    const { numberOfAllPages } = await this.recipesListPageScraper.scrap();
+    const { recipesPaths, nextCursor, total } =
+      await this.recipesListPageScraper.scrapPaginatedRecipesPaths(cursor, limit);
 
-    const recipes: RecipePage[] = [];
-    for (let pageNumber = numberOfAllPages; pageNumber > 0; pageNumber--) {
-      const { recipesPaths } = await this.recipesListPageScraper.scrap(pageNumber);
+    this.logger.debug(`Scraped recipes paths:\n${JSON.stringify(recipesPaths, null, 2)}`);
+    this.logger.debug(`Scraped next cursor: ${nextCursor}`);
 
-      for (let i = recipesPaths.length - 1; i >= 0; i--) {
-        recipes.push(await this.recipePageScraper.scrap(recipesPaths[i]));
-      }
-    }
+    const recipes = await this.recipePageScraper.scrapMany(recipesPaths);
 
-    this.logger.info('Scraping finished');
+    const recipesPaginated = {
+      recipes,
+      nextCursor,
+      total,
+    };
+
+    this.logger.debug(`Scraped recipes paginated:\n${JSON.stringify(recipesPaginated, null, 2)}`);
+
+    return recipesPaginated;
   }
 
   public async close(): Promise<void> {
-    this.logger.info('Closing browser');
+    this.logger.info('Closing scraper');
 
     await this.browser.close();
-
-    this.logger.info('Browser closed');
   }
 }

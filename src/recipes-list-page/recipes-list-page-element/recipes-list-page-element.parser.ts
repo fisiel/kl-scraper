@@ -7,12 +7,12 @@ import { RecipesListPageElementSelector } from './types/enum/recipes-list-page-e
 
 export class RecipesListPageElementParser {
   private readonly logger: Logger;
+  private readonly recipesListPageElementResolver: RecipesListPageElementResolver;
 
-  constructor(
-    private readonly recipesListPageElementResolver: RecipesListPageElementResolver,
-    loggerProvider: LoggerProvider,
-  ) {
+  constructor(loggerProvider: LoggerProvider) {
     this.logger = loggerProvider.provide(RecipesListPageElementParser.name);
+
+    this.recipesListPageElementResolver = new RecipesListPageElementResolver(loggerProvider);
   }
 
   public async parseNumberOfAllRecipes(page: Page): Promise<number> {
@@ -20,7 +20,7 @@ export class RecipesListPageElementParser {
       .locator(RecipesListPageElementSelector.NUMBER_OF_ALL_RECIPES)
       .innerText();
 
-    this.logger.debug(
+    this.logger.silly(
       `Number of all recipes element ${RecipesListPageElementSelector.NUMBER_OF_ALL_RECIPES} inner text: ${numberOfAllRecipesElementInnerText}`,
     );
 
@@ -36,7 +36,7 @@ export class RecipesListPageElementParser {
       .locator(RecipesListPageElementSelector.RECIPE)
       .count();
 
-    this.logger.debug(
+    this.logger.silly(
       `Number of recipes elements ${RecipesListPageElementSelector.RECIPE} per page: ${numberOfRecipesElements}`,
     );
 
@@ -51,7 +51,7 @@ export class RecipesListPageElementParser {
         .nth(i)
         .getAttribute(PageElementAttribute.HREF)) as string;
 
-      this.logger.debug(
+      this.logger.silly(
         `Recipe path element ${RecipesListPageElementSelector.RECIPE_PATH} attribute ${PageElementAttribute.HREF}: ${recipePathElementAttribute}`,
       );
 

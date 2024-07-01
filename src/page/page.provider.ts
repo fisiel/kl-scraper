@@ -1,7 +1,11 @@
 import { BrowserContext, Page } from 'playwright';
-import { Logger, LoggerProvider } from '../logger/logger.module';
-import { PageDelayResolver } from './page-delay/page-delay.module';
+import { LoggerProvider } from '../logger/logger.provider';
+import { Logger } from '../logger/types/interface/logger.interface';
+import { DEFAULT_REQUEST_TIMEOUT } from './constant';
+import { PageDelayResolver } from './page-delay/page-delay.resolver';
+import { DelayBetweenRequests } from './page-delay/types/type/delay-between-requests.type';
 import { PageElementSelector } from './types/enum/page-element-selector.enum';
+import { PageEvent } from './types/enum/page-event.enum';
 
 export class PageProvider {
   private readonly logger: Logger;
@@ -10,13 +14,13 @@ export class PageProvider {
 
   constructor(
     private readonly browserContext: BrowserContext,
-    private readonly requestTimeout: number,
+    private readonly requestTimeout: number = DEFAULT_REQUEST_TIMEOUT,
     loggerProvider: LoggerProvider,
-    delayBetweenRequests: [number, number],
+    delayBetweenRequests?: DelayBetweenRequests,
   ) {
     this.logger = loggerProvider.provide(PageProvider.name);
 
-    this.pageDelayResolver = new PageDelayResolver(delayBetweenRequests);
+    this.pageDelayResolver = new PageDelayResolver(loggerProvider, delayBetweenRequests);
   }
 
   public async provide(url: string): Promise<Page> {
@@ -24,13 +28,13 @@ export class PageProvider {
 
     const page = await this.browserContext.newPage();
 
-    page.once('domcontentloaded', async () => {
+    page.once(PageEvent.DOMCONTENTLOADED, async () => {
       await this.assertCookiesAreRejected(page);
     });
 
     await page.goto(url, {
       timeout: this.requestTimeout,
-      waitUntil: 'load',
+      waitUntil: PageEvent.LOAD,
     });
 
     await page.waitForTimeout(this.pageDelayResolver.resolve());
@@ -40,11 +44,9 @@ export class PageProvider {
 
   private async assertCookiesAreRejected(page: Page): Promise<void> {
     if (await page.isVisible(PageElementSelector.REJECT_COOKIES_BUTTON)) {
-      this.logger.debug('Clicking reject cookies button');
+      this.logger.silly('Clicking reject cookies button');
 
       await page.locator(PageElementSelector.REJECT_COOKIES_BUTTON).click();
-
-      this.logger.debug('Reject cookies button clicked');
     }
   }
 }

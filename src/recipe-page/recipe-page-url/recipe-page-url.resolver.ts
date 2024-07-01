@@ -1,4 +1,5 @@
-import { Logger, LoggerProvider } from '../../logger/logger.module';
+import { LoggerProvider } from '../../logger/logger.provider';
+import { Logger } from '../../logger/types/interface/logger.interface';
 import { BASE_URL } from '../../shared/constant';
 
 export class RecipePageUrlResolver {
@@ -11,7 +12,7 @@ export class RecipePageUrlResolver {
   public resolve(recipePath: string): string {
     const recipeUrl = `${BASE_URL}${recipePath}`;
 
-    this.logger.debug(`Recipe URL: ${recipeUrl}`);
+    this.logger.silly(`Recipe URL: ${recipeUrl}`);
 
     return recipeUrl;
   }

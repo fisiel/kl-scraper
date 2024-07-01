@@ -4,4 +4,5 @@ export enum LoggerLevel {
   WARN = 2,
   INFO = 3,
   DEBUG = 4,
+  SILLY = 5,
 }

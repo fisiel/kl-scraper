@@ -1,6 +1,7 @@
 import { Page } from 'playwright';
-import { Logger, LoggerProvider } from '../../logger/logger.module';
-import { PageElementAttribute } from '../../page/page.module';
+import { LoggerProvider } from '../../logger/logger.provider';
+import { Logger } from '../../logger/types/interface/logger.interface';
+import { PageElementAttribute } from '../../page/types/enum/page-element-attribute.enum';
 import { RecipePageElementResolver } from './recipe-page-element.resolver';
 import { RecipePageNutritionalValueName } from './types/enum/recipe-page-element-nutritional-value-name.enum';
 import { RecipePageNutritionalValueUnit } from './types/enum/recipe-page-element-nutritional-value-unit.enum';
@@ -27,7 +28,7 @@ export class RecipePageElementParser {
       .locator(RecipePageElementSelector.TITLE)
       .getAttribute(PageElementAttribute.CONTENT);
 
-    this.logger.debug(
+    this.logger.silly(
       `Title element ${RecipePageElementSelector.TITLE} attribute ${PageElementAttribute.CONTENT}: ${titleElementAttribute}`,
     );
 
@@ -39,7 +40,7 @@ export class RecipePageElementParser {
       .locator(RecipePageElementSelector.TIME_OF_PREPARATION)
       .innerText();
 
-    this.logger.debug(
+    this.logger.silly(
       `Time of preparation element ${RecipePageElementSelector.TIME_OF_PREPARATION} inner text: ${timeOfPreparationElementInnerText}`,
     );
 
@@ -51,7 +52,7 @@ export class RecipePageElementParser {
       .locator(RecipePageElementSelector.NUMBER_OF_SERVINGS)
       .innerText();
 
-    this.logger.debug(
+    this.logger.silly(
       `Number of servings element ${RecipePageElementSelector.NUMBER_OF_SERVINGS} inner text: ${numberOfServingsElementInnerText}`,
     );
 
@@ -63,7 +64,7 @@ export class RecipePageElementParser {
       .locator(RecipePageElementSelector.PART_NAME)
       .count();
 
-    this.logger.debug(
+    this.logger.silly(
       `Number of recipe parts elements ${RecipePageElementSelector.PART_NAME}: ${numberOfRecipePartsElements}`,
     );
 
@@ -83,7 +84,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.PART_NAME)
         .nth(i)
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Recipe part name element ${RecipePageElementSelector.PART_NAME} inner text: ${recipePartNameElementInnerText}`,
       );
 
@@ -103,7 +104,7 @@ export class RecipePageElementParser {
       .locator(RecipePageElementSelector.PART_INGREDIENT)
       .count();
 
-    this.logger.debug(
+    this.logger.silly(
       `Number of recipe part ingredients elements ${RecipePageElementSelector.PART_INGREDIENT}: ${numberOfRecipePartIngredientsElements}`,
     );
 
@@ -114,7 +115,7 @@ export class RecipePageElementParser {
         .nth(i)
         .innerText();
 
-      this.logger.debug(
+      this.logger.silly(
         `Recipe part ingredient element ${RecipePageElementSelector.PART_INGREDIENT} inner text: ${recipePartIngredientElementInnerText}'`,
       );
 
@@ -142,7 +143,7 @@ export class RecipePageElementParser {
     const numberOfNutritionalValuesElements = await page
       .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_NAME)
       .count();
-    this.logger.debug(
+    this.logger.silly(
       `Number of nutritional values elements ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME}: ${numberOfNutritionalValuesElements}`,
     );
 
@@ -151,7 +152,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_NAME)
         .nth(i)
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Nutritional value name element ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME} inner text: ${nutritionalValueNameElementInnerText}`,
       );
 
@@ -159,7 +160,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_VALUE_UNIT)
         .nth(i)
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Nutritional value value/unit element ${RecipePageElementSelector.NUTRITIONAL_VALUE_VALUE_UNIT} inner text: ${nutritionalValueValueUnitElementInnerText}`,
       );
 
@@ -205,7 +206,7 @@ export class RecipePageElementParser {
     const numberOfBeforeCookingStepsElements = await page
       .locator(RecipePageElementSelector.BEFORE_COOKING_STEP)
       .count();
-    this.logger.debug(
+    this.logger.silly(
       `Number of before cooking steps elements ${RecipePageElementSelector.BEFORE_COOKING_STEP}: ${numberOfBeforeCookingStepsElements}`,
     );
 
@@ -215,7 +216,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.BEFORE_COOKING_STEP)
         .nth(i)
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Before cooking step element ${RecipePageElementSelector.BEFORE_COOKING_STEP} inner text: ${beforeCookingStepElementInnerText}`,
       );
 
@@ -236,7 +237,7 @@ export class RecipePageElementParser {
     const numberOfCookingStepsElements = await page
       .locator(RecipePageElementSelector.COOKING_STEP_DESCRIPTION)
       .count();
-    this.logger.debug(
+    this.logger.silly(
       `Number of cooking steps elements ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION}: ${numberOfCookingStepsElements}`,
     );
 
@@ -246,7 +247,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.COOKING_STEP_TITLE)
         .nth(numberOfBeforeCookingSteps > 0 ? i + 1 : i) // because first element is header
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Cooking step title element ${RecipePageElementSelector.COOKING_STEP_TITLE} inner text: ${cookingStepTitleElementInnerText}`,
       );
 
@@ -254,7 +255,7 @@ export class RecipePageElementParser {
         .locator(RecipePageElementSelector.COOKING_STEP_DESCRIPTION)
         .nth(i)
         .innerText();
-      this.logger.debug(
+      this.logger.silly(
         `Cooking step description element ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION} inner text: ${cookingStepDescriptionElementInnerText}`,
       );
 

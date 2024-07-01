@@ -1,39 +1,36 @@
-import { LoggerLevel } from '../logger/logger.module';
+import { DEFAULT_LOG_LEVEL } from '../logger/constant';
+import { DEFAULT_REQUEST_TIMEOUT } from '../page/constant';
 import {
-  DEFAULT_BROWSER_DELAY_BETWEEN_REQUESTS_BASE,
-  DEFAULT_BROWSER_DELAY_BETWEEN_REQUESTS_MAX_RANDOM,
-  DEFAULT_BROWSER_HEADLESS,
-  DEFAULT_BROWSER_REQUEST_TIMEOUT,
-  DEFAULT_LOG_LEVEL,
-} from './constant';
+  DEFAULT_DELAY_BETWEEN_REQUESTS_BASE,
+  DEFAULT_DELAY_BETWEEN_REQUESTS_MAX_RANDOM,
+} from '../page/page-delay/constant';
+import { DEFAULT_BROWSER_HEADLESS } from './constant';
 import { KLScraperOptionsEnvVariable } from './types/enum/kl-scraper-options-env-variable.enum';
-import { KLScraperOptionsInput } from './types/interface/kl-scraper-options-input.interface';
+import { KLScraperOptionsProviderOutput } from './types/interface/kl-scraper-options-provider-output.interface';
 import { KLScraperOptions } from './types/interface/kl-scraper-options.interface';
 
 export class KLScraperOptionsProvider {
-  public provide(klScraperOptions?: KLScraperOptionsInput): KLScraperOptions {
-    if (!klScraperOptions) {
-      klScraperOptions = {};
-    }
-
-    const { browser, log } = klScraperOptions;
-
-    return {
-      browser: {
-        requestTimeout: browser?.requestTimeout ?? DEFAULT_BROWSER_REQUEST_TIMEOUT,
-        headless: browser?.headless ?? DEFAULT_BROWSER_HEADLESS,
-        delayBetweenRequests: browser?.delayBetweenRequests ?? [
-          DEFAULT_BROWSER_DELAY_BETWEEN_REQUESTS_BASE,
-          DEFAULT_BROWSER_DELAY_BETWEEN_REQUESTS_MAX_RANDOM,
-        ],
-      },
-      log: {
-        level: log?.level ?? DEFAULT_LOG_LEVEL,
-      },
+  provide(klScraperOptions?: KLScraperOptions): KLScraperOptionsProviderOutput {
+    const browser = {
+      requestTimeout: klScraperOptions?.browser?.requestTimeout ?? DEFAULT_REQUEST_TIMEOUT,
+      headless: klScraperOptions?.browser?.headless ?? DEFAULT_BROWSER_HEADLESS,
+      delayBetweenRequests: klScraperOptions?.browser?.delayBetweenRequests ?? [
+        DEFAULT_DELAY_BETWEEN_REQUESTS_BASE,
+        DEFAULT_DELAY_BETWEEN_REQUESTS_MAX_RANDOM,
+      ],
     };
+
+    const log = {
+      level: klScraperOptions?.log?.level ?? DEFAULT_LOG_LEVEL,
+      dir: klScraperOptions?.log?.dir,
+    };
+
+    const options = { browser, log };
+
+    return options;
   }
 
-  static getFromEnv(): KLScraperOptionsInput {
+  static getFromEnv(): KLScraperOptions {
     return {
       browser: {
         requestTimeout: process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_BROWSER_REQUEST_TIMEOUT]
@@ -57,11 +54,9 @@ export class KLScraperOptionsProvider {
       },
       log: {
         level: process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_LOG_LEVEL]
-          ? (parseInt(
-              process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_LOG_LEVEL],
-              10,
-            ) as LoggerLevel)
+          ? parseInt(process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_LOG_LEVEL], 10)
           : undefined,
+        dir: process.env[KLScraperOptionsEnvVariable.KL_SCRAPER_LOG_DIR],
       },
     };
   }

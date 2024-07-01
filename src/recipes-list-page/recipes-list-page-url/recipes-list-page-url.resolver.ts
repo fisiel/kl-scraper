@@ -1,4 +1,5 @@
-import { Logger, LoggerProvider } from '../../logger/logger.module';
+import { LoggerProvider } from '../../logger/logger.provider';
+import { Logger } from '../../logger/types/interface/logger.interface';
 import { BASE_URL } from '../../shared/constant';
 
 export class RecipesListPageUrlResolver {
@@ -11,11 +12,12 @@ export class RecipesListPageUrlResolver {
   public resolve(pageNumber?: number): string {
     const baseRecipesListUrl = `${BASE_URL}/przepisy/nowe/rosnaco`;
 
-    const recipesListUrl = pageNumber
-      ? `${baseRecipesListUrl}/${pageNumber}#lista`
-      : baseRecipesListUrl;
+    const recipesListUrl =
+      pageNumber && pageNumber > 0
+        ? `${baseRecipesListUrl}/${pageNumber}#lista`
+        : baseRecipesListUrl;
 
-    this.logger.debug(`Recipes list URL: ${recipesListUrl}`);
+    this.logger.silly(`Recipes list URL: ${recipesListUrl}`);
 
     return recipesListUrl;
   }

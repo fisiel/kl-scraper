@@ -1,8 +1,6 @@
-import {
-  CookingStep,
-  NutritionalValues,
-  RecipePart,
-} from '../../recipe-page-element/recipe-page-element.module';
+import { CookingStep } from '../../recipe-page-element/types/interface/cooking-step.interface';
+import { NutritionalValues } from '../../recipe-page-element/types/interface/nutritional-values.interface';
+import { RecipePart } from '../../recipe-page-element/types/interface/recipe-part.interface';
 
 export interface RecipePage {
   path: string;

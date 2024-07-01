@@ -5,4 +5,5 @@ export interface Logger {
   warn: LoggerMethod;
   info: LoggerMethod;
   debug: LoggerMethod;
+  silly: LoggerMethod;
 }
