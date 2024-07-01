@@ -21,7 +21,7 @@ export class KLScraper {
     const {
       browser: { headless, requestTimeout, delayBetweenRequests },
       log: { level, dir },
-    } = KLScraperOptionsProvider.provide(klScraperOptions);
+    } = new KLScraperOptionsProvider().provide(klScraperOptions);
 
     const loggerProvider = new LoggerProvider(level, dir);
 
