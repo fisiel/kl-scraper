@@ -5,7 +5,7 @@ import { RecipePart } from '../../recipe-page-element/types/interface/recipe-par
 export interface RecipePage {
   path: string;
   title: string;
-  timeOfPreparation: string;
+  timeOfPreparation: string | null;
   numberOfServings: number;
   recipeParts: RecipePart[];
   nutritionalValues: NutritionalValues;

@@ -24,49 +24,67 @@ export class RecipePageElementParser {
   }
 
   public async parseTitle(page: Page): Promise<string> {
+    this.logger.silly(
+      `Parsing title element ${RecipePageElementSelector.TITLE} attribute ${PageElementAttribute.CONTENT}`,
+    );
+
     const titleElementAttribute = await page
       .locator(RecipePageElementSelector.TITLE)
       .getAttribute(PageElementAttribute.CONTENT);
 
-    this.logger.silly(
-      `Title element ${RecipePageElementSelector.TITLE} attribute ${PageElementAttribute.CONTENT}: ${titleElementAttribute}`,
-    );
+    this.logger.silly(`Title element attribute: ${titleElementAttribute}`);
 
     return this.recipePageElementResolver.resolveTitle(titleElementAttribute as string);
   }
 
-  public async parseTimeOfPreparation(page: Page): Promise<string> {
+  public async parseTimeOfPreparation(page: Page): Promise<string | null> {
+    this.logger.silly(
+      `Parsing time of preparation element ${RecipePageElementSelector.TIME_OF_PREPARATION}`,
+    );
+
+    const timeOfPreparationElement = page.locator(RecipePageElementSelector.TIME_OF_PREPARATION);
+
+    if (await timeOfPreparationElement.isHidden()) {
+      this.logger.silly('Time of preparation element is not available');
+
+      return null;
+    }
+
     const timeOfPreparationElementInnerText = await page
       .locator(RecipePageElementSelector.TIME_OF_PREPARATION)
       .innerText();
 
     this.logger.silly(
-      `Time of preparation element ${RecipePageElementSelector.TIME_OF_PREPARATION} inner text: ${timeOfPreparationElementInnerText}`,
+      `Time of preparation element inner text: ${timeOfPreparationElementInnerText}`,
     );
 
     return timeOfPreparationElementInnerText;
   }
 
   public async parseNumberOfServings(page: Page): Promise<number> {
+    this.logger.silly(
+      `Parsing number of servings element ${RecipePageElementSelector.NUMBER_OF_SERVINGS}`,
+    );
+
     const numberOfServingsElementInnerText = await page
       .locator(RecipePageElementSelector.NUMBER_OF_SERVINGS)
       .innerText();
 
-    this.logger.silly(
-      `Number of servings element ${RecipePageElementSelector.NUMBER_OF_SERVINGS} inner text: ${numberOfServingsElementInnerText}`,
-    );
+    this.logger.silly(`Number of servings element inner text: ${numberOfServingsElementInnerText}`);
 
     return this.recipePageElementResolver.resolveNumberOfServings(numberOfServingsElementInnerText);
   }
 
   public async parseRecipeParts(page: Page): Promise<RecipePart[]> {
+    this.logger.silly(
+      `Parsing number of recipe parts elements ${RecipePageElementSelector.PART_NAME}`,
+    );
+
     const numberOfRecipePartsElements = await page
       .locator(RecipePageElementSelector.PART_NAME)
       .count();
 
-    this.logger.silly(
-      `Number of recipe parts elements ${RecipePageElementSelector.PART_NAME}: ${numberOfRecipePartsElements}`,
-    );
+    this.logger.silly(`Number of recipe parts elements: ${numberOfRecipePartsElements}`);
 
     if (numberOfRecipePartsElements === 0) {
       const recipePartIngredients = await this.parseRecipePartIngredients(page);
@@ -80,13 +98,14 @@ export class RecipePageElementParser {
 
     const recipeParts: RecipePart[] = [];
     for (let i = 0; i < numberOfRecipePartsElements; i++) {
+      this.logger.silly(`Parsing recipe part name element ${RecipePageElementSelector.PART_NAME}`);
+
       const recipePartNameElementInnerText = await page
         .locator(RecipePageElementSelector.PART_NAME)
         .nth(i)
         .innerText();
-      this.logger.silly(
-        `Recipe part name element ${RecipePageElementSelector.PART_NAME} inner text: ${recipePartNameElementInnerText}`,
-      );
+
+      this.logger.silly(`Recipe part name element inner text: ${recipePartNameElementInnerText}`);
 
       const recipePartIngredients = await this.parseRecipePartIngredients(page);
 
@@ -100,23 +119,31 @@ export class RecipePageElementParser {
   }
 
   private async parseRecipePartIngredients(page: Page): Promise<Ingredient[]> {
+    this.logger.silly(
+      `Parsing number of recipe part ingredients elements ${RecipePageElementSelector.PART_INGREDIENT}`,
+    );
+
     const numberOfRecipePartIngredientsElements = await page
       .locator(RecipePageElementSelector.PART_INGREDIENT)
       .count();
 
     this.logger.silly(
-      `Number of recipe part ingredients elements ${RecipePageElementSelector.PART_INGREDIENT}: ${numberOfRecipePartIngredientsElements}`,
+      `Number of recipe part ingredients elements: ${numberOfRecipePartIngredientsElements}`,
     );
 
     const recipePartIngredients: Ingredient[] = [];
     for (let i = 0; i < numberOfRecipePartIngredientsElements; i++) {
+      this.logger.silly(
+        `Parsing recipe part ingredient element ${RecipePageElementSelector.PART_INGREDIENT}`,
+      );
+
       const recipePartIngredientElementInnerText = await page
         .locator(RecipePageElementSelector.PART_INGREDIENT)
         .nth(i)
         .innerText();
 
       this.logger.silly(
-        `Recipe part ingredient element ${RecipePageElementSelector.PART_INGREDIENT} inner text: ${recipePartIngredientElementInnerText}'`,
+        `Recipe part ingredient element inner text: ${recipePartIngredientElementInnerText}'`,
       );
 
       recipePartIngredients.push(
@@ -140,28 +167,43 @@ export class RecipePageElementParser {
     let fiber: NutritionalValue = { value: 0, unit: RecipePageNutritionalValueUnit.GRAM };
     let proteins: NutritionalValue = { value: 0, unit: RecipePageNutritionalValueUnit.GRAM };
 
+    this.logger.silly(
+      `Parsing number of nutritional values elements ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME}`,
+    );
+
     const numberOfNutritionalValuesElements = await page
       .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_NAME)
       .count();
+
     this.logger.silly(
-      `Number of nutritional values elements ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME}: ${numberOfNutritionalValuesElements}`,
+      `Number of nutritional values elements: ${numberOfNutritionalValuesElements}`,
     );
 
     for (let i = 0; i < numberOfNutritionalValuesElements; i++) {
+      this.logger.silly(
+        `Parsing nutritional value name element ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME}`,
+      );
+
       const nutritionalValueNameElementInnerText = await page
         .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_NAME)
         .nth(i)
         .innerText();
+
       this.logger.silly(
-        `Nutritional value name element ${RecipePageElementSelector.NUTRITIONAL_VALUE_NAME} inner text: ${nutritionalValueNameElementInnerText}`,
+        `Nutritional value name element inner text: ${nutritionalValueNameElementInnerText}`,
+      );
+
+      this.logger.silly(
+        `Nutritional value value/unit element ${RecipePageElementSelector.NUTRITIONAL_VALUE_VALUE_UNIT}`,
       );
 
       const nutritionalValueValueUnitElementInnerText = await page
         .locator(RecipePageElementSelector.NUTRITIONAL_VALUE_VALUE_UNIT)
         .nth(i)
         .innerText();
+
       this.logger.silly(
-        `Nutritional value value/unit element ${RecipePageElementSelector.NUTRITIONAL_VALUE_VALUE_UNIT} inner text: ${nutritionalValueValueUnitElementInnerText}`,
+        `Nutritional value value/unit element inner text: ${nutritionalValueValueUnitElementInnerText}`,
       );
 
       const nutritionalValue = this.recipePageElementResolver.resolveNutritionalValue(
@@ -203,21 +245,31 @@ export class RecipePageElementParser {
   }
 
   public async parseBeforeCookingSteps(page: Page): Promise<string[]> {
+    this.logger.silly(
+      `Parsing number of before cooking steps elements ${RecipePageElementSelector.BEFORE_COOKING_STEP}`,
+    );
+
     const numberOfBeforeCookingStepsElements = await page
       .locator(RecipePageElementSelector.BEFORE_COOKING_STEP)
       .count();
+
     this.logger.silly(
-      `Number of before cooking steps elements ${RecipePageElementSelector.BEFORE_COOKING_STEP}: ${numberOfBeforeCookingStepsElements}`,
+      `Number of before cooking steps elements: ${numberOfBeforeCookingStepsElements}`,
     );
 
     const beforeCookingSteps: string[] = [];
     for (let i = 0; i < numberOfBeforeCookingStepsElements; i++) {
+      this.logger.silly(
+        `Parsing before cooking step element ${RecipePageElementSelector.BEFORE_COOKING_STEP}`,
+      );
+
       const beforeCookingStepElementInnerText = await page
         .locator(RecipePageElementSelector.BEFORE_COOKING_STEP)
         .nth(i)
         .innerText();
+
       this.logger.silly(
-        `Before cooking step element ${RecipePageElementSelector.BEFORE_COOKING_STEP} inner text: ${beforeCookingStepElementInnerText}`,
+        `Before cooking step element inner text: ${beforeCookingStepElementInnerText}`,
       );
 
       const beforeCookingStep = this.recipePageElementResolver.resolveBeforeCookingStep(
@@ -234,29 +286,42 @@ export class RecipePageElementParser {
     page: Page,
     numberOfBeforeCookingSteps: number,
   ): Promise<CookingStep[]> {
+    this.logger.silly(
+      `Parsing number of cooking steps elements ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION}`,
+    );
+
     const numberOfCookingStepsElements = await page
       .locator(RecipePageElementSelector.COOKING_STEP_DESCRIPTION)
       .count();
-    this.logger.silly(
-      `Number of cooking steps elements ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION}: ${numberOfCookingStepsElements}`,
-    );
+
+    this.logger.silly(`Number of cooking steps elements: ${numberOfCookingStepsElements}`);
 
     const cookingSteps: CookingStep[] = [];
     for (let i = 0; i < numberOfCookingStepsElements; i++) {
+      this.logger.silly(
+        `Parsing cooking step title element ${RecipePageElementSelector.COOKING_STEP_TITLE}`,
+      );
+
       const cookingStepTitleElementInnerText = await page
         .locator(RecipePageElementSelector.COOKING_STEP_TITLE)
         .nth(numberOfBeforeCookingSteps > 0 ? i + 1 : i) // because first element is header
         .innerText();
+
       this.logger.silly(
-        `Cooking step title element ${RecipePageElementSelector.COOKING_STEP_TITLE} inner text: ${cookingStepTitleElementInnerText}`,
+        `Cooking step title element inner text: ${cookingStepTitleElementInnerText}`,
+      );
+
+      this.logger.silly(
+        `Parsing cooking step description element ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION}`,
       );
 
       const cookingStepDescriptionElementInnerText = await page
         .locator(RecipePageElementSelector.COOKING_STEP_DESCRIPTION)
         .nth(i)
         .innerText();
+
       this.logger.silly(
-        `Cooking step description element ${RecipePageElementSelector.COOKING_STEP_DESCRIPTION} inner text: ${cookingStepDescriptionElementInnerText}`,
+        `Cooking step description element inner text: ${cookingStepDescriptionElementInnerText}`,
       );
 
       const description = this.recipePageElementResolver.resolveCookingStepDescription(
