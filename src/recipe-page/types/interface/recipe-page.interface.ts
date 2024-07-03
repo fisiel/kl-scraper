@@ -6,7 +6,7 @@ export interface RecipePage {
   path: string;
   title: string;
   timeOfPreparation: string | null;
-  numberOfServings: number;
+  numberOfServings: number | null;
   recipeParts: RecipePart[];
   nutritionalValues: NutritionalValues;
   beforeCookingSteps: string[];

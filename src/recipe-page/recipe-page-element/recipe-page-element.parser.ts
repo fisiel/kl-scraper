@@ -61,10 +61,18 @@ export class RecipePageElementParser {
     return timeOfPreparationElementInnerText;
   }
 
-  public async parseNumberOfServings(page: Page): Promise<number> {
+  public async parseNumberOfServings(page: Page): Promise<number | null> {
     this.logger.silly(
       `Parsing number of servings element ${RecipePageElementSelector.NUMBER_OF_SERVINGS}`,
     );
+
+    const numberOfServingsElement = page.locator(RecipePageElementSelector.NUMBER_OF_SERVINGS);
+
+    if (await numberOfServingsElement.isHidden()) {
+      this.logger.silly('Number of servings element is not available');
+
+      return null;
+    }
 
     const numberOfServingsElementInnerText = await page
       .locator(RecipePageElementSelector.NUMBER_OF_SERVINGS)
