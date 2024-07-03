@@ -36,13 +36,14 @@ export class RecipesListPagePaginatedRecipesPathsResolver {
         : numberOfRecipesPerPage - startRecipePathIndex;
 
     this.logger.silly(`Start slice index: ${startSliceIndex}`);
+    this.logger.silly(`Stop slice index: ${stopRecipePathIndex + 1}`);
 
     let recipesList = recipesListPages.flatMap(({ recipesPaths }) => recipesPaths.reverse());
 
     recipesList =
       stopRecipePathIndex === 0
         ? recipesList.slice(startSliceIndex)
-        : recipesList.slice(startSliceIndex, -stopRecipePathIndex);
+        : recipesList.slice(startSliceIndex, -stopRecipePathIndex - 1);
 
     this.logger.silly(`Recipes list: ${recipesList}`);
 

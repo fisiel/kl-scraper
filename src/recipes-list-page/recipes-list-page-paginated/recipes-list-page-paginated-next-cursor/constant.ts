@@ -1,0 +1,2 @@
+export const MINIMAL_CURSOR = 1;
+export const MINIMAL_RECIPE_LIST_PAGE_NUMBER = 1;

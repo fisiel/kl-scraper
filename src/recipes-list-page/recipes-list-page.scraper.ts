@@ -3,6 +3,7 @@ import { Logger } from '../logger/types/interface/logger.interface';
 import { PageProvider } from '../page/page.provider';
 import { DEFAULT_PAGINATION_CURSOR, DEFAULT_PAGINATION_LIMIT } from './constant';
 import { RecipesListPageElementParser } from './recipes-list-page-element/recipes-list-page-element.parser';
+import { MINIMAL_CURSOR } from './recipes-list-page-paginated/recipes-list-page-paginated-next-cursor/constant';
 import { RecipesListPagePaginatedNextCursorResolver } from './recipes-list-page-paginated/recipes-list-page-paginated-next-cursor/recipes-list-page-paginated-next-cursor.resolver';
 import { RecipesListPagePaginatedRangeResolver } from './recipes-list-page-paginated/recipes-list-page-paginated-range/recipes-list-page-paginated-range.resolver';
 import { RecipesListPagePaginatedRecipesPathsResolver } from './recipes-list-page-paginated/recipes-list-page-paginated-recipes-paths/recipes-list-page-paginated-recipes-paths.resolver';
@@ -92,12 +93,18 @@ export class RecpiesListPageScraper {
       recipesPaths: { length: numberOfRecipesPerPage },
     } = await this.scrapOne();
 
-    if (cursor >= numberOfAllRecipes) {
-      this.logger.warn(
-        `Cursor ${cursor} is greater than or equal to number of all recipes: ${numberOfAllRecipes}`,
+    if (cursor > numberOfAllRecipes) {
+      this.logger.error(
+        `Cursor ${cursor} is greater than number of all recipes: ${numberOfAllRecipes}`,
       );
 
-      return { recipesPaths: [], nextCursor: 1, total: numberOfAllRecipes };
+      return { recipesPaths: [], nextCursor: MINIMAL_CURSOR, total: numberOfAllRecipes };
+    }
+
+    if (cursor < MINIMAL_CURSOR) {
+      this.logger.error(`Cursor ${cursor} must be greater than or equal to ${MINIMAL_CURSOR}`);
+
+      return { recipesPaths: [], nextCursor: MINIMAL_CURSOR, total: numberOfAllRecipes };
     }
 
     const [

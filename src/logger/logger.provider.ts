@@ -19,11 +19,9 @@ export class LoggerProvider {
       return;
     }
 
-    const logDir = path.join(__dirname, `../../${dir}`);
+    mkdirSync(dir, { recursive: true });
 
-    mkdirSync(logDir, { recursive: true });
-
-    this.logFile = dir === undefined ? dir : path.join(logDir, `kl-scraper-${Date.now()}.log`);
+    this.logFile = dir === undefined ? dir : path.join(dir, `kl-scraper-${Date.now()}.log`);
   }
 
   public provide(serviceName: string): Logger {

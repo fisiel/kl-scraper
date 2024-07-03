@@ -1,5 +1,6 @@
 import { LoggerProvider } from '../../../logger/logger.provider';
 import { Logger } from '../../../logger/types/interface/logger.interface';
+import { MINIMAL_CURSOR, MINIMAL_RECIPE_LIST_PAGE_NUMBER } from './constant';
 
 export class RecipesListPagePaginatedNextCursorResolver {
   private readonly logger: Logger;
@@ -18,10 +19,10 @@ export class RecipesListPagePaginatedNextCursorResolver {
     let nextCursor;
 
     if (
-      (stopRecipePathIndex === 0 && stopPageNumber === 1) ||
+      (stopRecipePathIndex === 0 && stopPageNumber === MINIMAL_RECIPE_LIST_PAGE_NUMBER) ||
       cursor + limit > numberOfAllRecipes
     ) {
-      nextCursor = 1;
+      nextCursor = MINIMAL_CURSOR;
     } else {
       nextCursor = cursor + limit;
     }
