@@ -44,7 +44,11 @@ export class RecipesListPagePaginatedRangeResolver {
   }
 
   private resolveRecipePathIndex(recipeNumber: number, numberOfRecipesPerPage: number): number {
-    const recipePathIndex = (recipeNumber % numberOfRecipesPerPage) - 1;
+    let recipePathIndex = (recipeNumber % numberOfRecipesPerPage) - 1;
+
+    if (recipePathIndex < 0) {
+      recipePathIndex = numberOfRecipesPerPage - 1;
+    }
 
     this.logger.silly(`Recipe path index: ${recipePathIndex}`);
 
