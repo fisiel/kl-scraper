@@ -1,5 +1,6 @@
 import { LoggerProvider } from '../../../logger/logger.provider';
 import { Logger } from '../../../logger/types/interface/logger.interface';
+import { MINIMAL_CURSOR } from '../recipes-list-page-paginated-next-cursor/constant';
 import { RecipesListPagePaginatedRangeRecipeInfo } from './types/interface/recipes-list-page-paginated-range-recipe-info.interface';
 import { RecipesListPagePaginatedRange } from './types/type/recipes-list-page-paginated-range.type';
 
@@ -17,7 +18,12 @@ export class RecipesListPagePaginatedRangeResolver {
     limit: number,
   ): RecipesListPagePaginatedRange {
     const recipeNumber = numberOfAllRecipes - cursor + 1;
-    const lowestRecipeNumber = Math.max(0, recipeNumber - limit);
+
+    this.logger.silly(`Recipe number: ${recipeNumber}`);
+
+    const lowestRecipeNumber = Math.max(MINIMAL_CURSOR, recipeNumber - limit);
+
+    this.logger.silly(`Lowest recipe number: ${lowestRecipeNumber}`);
 
     return [
       this.resolveRecipeInfo(recipeNumber, numberOfRecipesPerPage),
