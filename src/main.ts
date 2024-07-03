@@ -17,7 +17,7 @@ const scrapSessionId = Date.now();
   let cursor = startCursor;
 
   do {
-    const paginatedRecipes = await klScraper.scrapPaginated(startCursor, recipesPerFile);
+    const paginatedRecipes = await klScraper.scrapPaginated(cursor, recipesPerFile);
 
     await writeFile(
       path.join(outputDir, `${scrapSessionId}-${cursor}-${paginatedRecipes.nextCursor}.json`),

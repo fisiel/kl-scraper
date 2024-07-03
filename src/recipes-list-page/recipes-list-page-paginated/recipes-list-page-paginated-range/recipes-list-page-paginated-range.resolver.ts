@@ -17,7 +17,7 @@ export class RecipesListPagePaginatedRangeResolver {
     limit: number,
   ): RecipesListPagePaginatedRange {
     const recipeNumber = numberOfAllRecipes - cursor + 1;
-    const lowestRecipeNumber = Math.max(0, recipeNumber - limit + 1);
+    const lowestRecipeNumber = Math.max(0, recipeNumber - limit);
 
     return [
       this.resolveRecipeInfo(recipeNumber, numberOfRecipesPerPage),
@@ -44,7 +44,7 @@ export class RecipesListPagePaginatedRangeResolver {
   }
 
   private resolveRecipePathIndex(recipeNumber: number, numberOfRecipesPerPage: number): number {
-    const recipePathIndex = recipeNumber % numberOfRecipesPerPage;
+    const recipePathIndex = (recipeNumber % numberOfRecipesPerPage) - 1;
 
     this.logger.silly(`Recipe path index: ${recipePathIndex}`);
 

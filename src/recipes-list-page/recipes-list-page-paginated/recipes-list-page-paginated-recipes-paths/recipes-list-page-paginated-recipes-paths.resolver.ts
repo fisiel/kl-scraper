@@ -26,24 +26,24 @@ export class RecipesListPagePaginatedRecipesPathsResolver {
       numberOfRecipesPerPage,
     );
 
-    const lastRecipeIndex = (numberOfAllRecipes % numberOfRecipesPerPage) - 1;
+    const lastRecipeOnPageIndex = (numberOfAllRecipes % numberOfRecipesPerPage) - 1;
 
-    this.logger.silly(`Last recipe index: ${lastRecipeIndex}`);
+    this.logger.silly(`Last recipe on page index: ${lastRecipeOnPageIndex}`);
 
     const startSliceIndex =
       startPageNumber === numberOfAllPages
-        ? lastRecipeIndex - startRecipePathIndex
-        : numberOfRecipesPerPage - startRecipePathIndex;
+        ? lastRecipeOnPageIndex - startRecipePathIndex
+        : numberOfRecipesPerPage - 1 - startRecipePathIndex;
 
     this.logger.silly(`Start slice index: ${startSliceIndex}`);
-    this.logger.silly(`Stop slice index: ${stopRecipePathIndex + 1}`);
+    this.logger.silly(`Stop slice index: ${stopRecipePathIndex}`);
 
     let recipesList = recipesListPages.flatMap(({ recipesPaths }) => recipesPaths.reverse());
 
     recipesList =
       stopRecipePathIndex === 0
         ? recipesList.slice(startSliceIndex)
-        : recipesList.slice(startSliceIndex, -stopRecipePathIndex - 1);
+        : recipesList.slice(startSliceIndex, -stopRecipePathIndex);
 
     this.logger.silly(`Recipes list: ${recipesList}`);
 
