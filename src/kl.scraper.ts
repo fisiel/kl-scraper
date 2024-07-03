@@ -52,9 +52,6 @@ export class KLScraper {
     const { recipesPaths, nextCursor, total } =
       await this.recipesListPageScraper.scrapPaginatedRecipesPaths(cursor, limit);
 
-    this.logger.debug(`Scraped recipes paths:\n${JSON.stringify(recipesPaths, null, 2)}`);
-    this.logger.debug(`Scraped next cursor: ${nextCursor}`);
-
     const recipes = await this.recipePageScraper.scrapMany(recipesPaths);
 
     const recipesPaginated = {
