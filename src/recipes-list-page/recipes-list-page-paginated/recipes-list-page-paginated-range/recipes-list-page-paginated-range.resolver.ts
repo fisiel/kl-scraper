@@ -22,7 +22,7 @@ export class RecipesListPagePaginatedRangeResolver {
 
     this.logger.silly(`Recipe number: ${recipeNumber}`);
 
-    const lowestRecipeNumber = Math.max(MINIMAL_CURSOR, recipeNumber - limit);
+    const lowestRecipeNumber = Math.max(MINIMAL_CURSOR, recipeNumber - limit + MINIMAL_CURSOR);
 
     this.logger.silly(`Lowest recipe number: ${lowestRecipeNumber}`);
 
