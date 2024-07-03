@@ -1,6 +1,7 @@
 import { LoggerProvider } from '../../../logger/logger.provider';
 import { Logger } from '../../../logger/types/interface/logger.interface';
 import { MINIMAL_CURSOR } from '../recipes-list-page-paginated-next-cursor/constant';
+import { indexify } from '../utils/indexify';
 import { RecipesListPagePaginatedRangeRecipeInfo } from './types/interface/recipes-list-page-paginated-range-recipe-info.interface';
 import { RecipesListPagePaginatedRange } from './types/type/recipes-list-page-paginated-range.type';
 
@@ -17,7 +18,7 @@ export class RecipesListPagePaginatedRangeResolver {
     cursor: number,
     limit: number,
   ): RecipesListPagePaginatedRange {
-    const recipeNumber = numberOfAllRecipes - cursor + 1;
+    const recipeNumber = numberOfAllRecipes - cursor + MINIMAL_CURSOR;
 
     this.logger.silly(`Recipe number: ${recipeNumber}`);
 
@@ -50,10 +51,10 @@ export class RecipesListPagePaginatedRangeResolver {
   }
 
   private resolveRecipePathIndex(recipeNumber: number, numberOfRecipesPerPage: number): number {
-    let recipePathIndex = (recipeNumber % numberOfRecipesPerPage) - 1;
+    let recipePathIndex = indexify(recipeNumber % numberOfRecipesPerPage);
 
     if (recipePathIndex < 0) {
-      recipePathIndex = numberOfRecipesPerPage - 1;
+      recipePathIndex = indexify(numberOfRecipesPerPage);
     }
 
     this.logger.silly(`Recipe path index: ${recipePathIndex}`);

@@ -2,6 +2,7 @@ import { LoggerProvider } from '../../../logger/logger.provider';
 import { Logger } from '../../../logger/types/interface/logger.interface';
 import { RecipesListPage } from '../../types/interface/recipes-list-page.interface';
 import { RecipesListPagePaginatedRangeResolver } from '../recipes-list-page-paginated-range/recipes-list-page-paginated-range.resolver';
+import { indexify } from '../utils/indexify';
 
 export class RecipesListPagePaginatedRecipesPathsResolver {
   private readonly logger: Logger;
@@ -26,14 +27,14 @@ export class RecipesListPagePaginatedRecipesPathsResolver {
       numberOfRecipesPerPage,
     );
 
-    const lastRecipeOnPageIndex = (numberOfAllRecipes % numberOfRecipesPerPage) - 1;
+    const lastRecipeOnPageIndex = indexify(numberOfAllRecipes % numberOfRecipesPerPage);
 
     this.logger.silly(`Last recipe on page index: ${lastRecipeOnPageIndex}`);
 
     const startSliceIndex =
       startPageNumber === numberOfAllPages
         ? lastRecipeOnPageIndex - startRecipePathIndex
-        : numberOfRecipesPerPage - 1 - startRecipePathIndex;
+        : indexify(numberOfRecipesPerPage) - startRecipePathIndex;
 
     this.logger.silly(`Start slice index: ${startSliceIndex}`);
     this.logger.silly(`Stop slice index: ${stopRecipePathIndex}`);
