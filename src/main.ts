@@ -1,7 +1,11 @@
 import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import { KLScraper, KLScraperOptionsProvider } from './index';
-import { KLScraperScrapConfigProvider } from './kl-scraper-scrap-config/kl-scraper-scrap-config.provider';
+import {
+  KLScraper,
+  KLScraperOptionsProvider,
+  KLScraperScrapConfigProvider,
+  MINIMAL_CURSOR,
+} from './index';
 
 const klScraperOptions = KLScraperOptionsProvider.getFromEnv();
 
@@ -25,7 +29,7 @@ const scrapSessionId = Date.now();
     );
 
     cursor = paginatedRecipes.nextCursor;
-  } while (cursor !== 1);
+  } while (cursor !== MINIMAL_CURSOR);
 
   await klScraper.close();
 })();
