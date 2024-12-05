@@ -1,0 +1,36 @@
+{
+  "name": "kl-scraper",
+  "version": "0.1.0",
+  "description": "Recipes scraper",
+  "homepage": "https://github.com/fisiel/kl-scraper#readme",
+  "license": "MIT",
+  "author": {
+    "name": "Michał Ciesielski",
+    "email": "miccies.dev@gmail.com",
+    "url": "https://github.com/fisiel"
+  },
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fisiel/kl-scraper.git"
+  },
+  "scripts": {
+    "postinstall": "npx playwright install",
+    "build": "tsc",
+    "start": "npm run build && node --env-file=.env dist/main.js"
+  },
+  "dependencies": {
+    "playwright": "^1.44.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.14.5",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.3.2",
+    "typescript": "^5.4.5"
+  }
+}

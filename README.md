@@ -1,1 +1,1 @@
-# kuchnialidla-scrapper
+# kl-scraper
